@@ -1,0 +1,121 @@
+# Project-specific quality checks for verify-quality.sh
+# After verify-quality.sh runs, quality-results.md is auto-generated in this feature directory.
+# Copy to specs/<feature>/quality-checks.yml during /speckit-plan
+# Merged with .specify/extensions/drupal/drupal-config.yml quality_rules
+
+performance:
+  check_urls:
+    - /
+
+smoke:
+  forbidden_strings:
+    - "Hello World"
+  libraries:
+    # - /libraries/slick/slick/slick.min.js
+  js_behaviors:
+    # - myThemeBehavior
+  # QR-SMOKE-008/009: Figma UI icons in scoped containers (see drupal-quality-rules.md)
+  icon_markers:
+    # - id: QR-SMOKE-008
+    #   path: /
+    #   container_class: explore-section
+    #   img_pattern: 'category-[^"]+\.png'
+    #   min_count: 1
+    #   width: 40
+    #   height: 40
+    # - id: QR-SMOKE-009
+    #   path: /
+    #   container_class: featured-recipes__controls
+    #   img_pattern: 'arrow-(left|right)\.png'
+    #   min_count: 2
+    #   width: 40
+    #   height: 40
+  # QR-SMOKE-010: card/content images use managed files, not Figma baseline crops
+  content_image_scopes:
+    # - id: QR-SMOKE-010
+    #   path: /
+    #   parent_class: recipe-grid
+    #   container_class: recipe-card__image
+    #   img_src_must_match: '/sites/default/files/'
+    #   img_src_must_not_match:
+    #     - 'images/figma/grid'
+    #     - 'figma-baselines'
+    #   min_count: 1
+  pages:
+    - path: /
+      must_contain:
+        - hero-block
+      must_not_contain:
+        - "Hello World"
+      min_occurrences:
+        recipe-card: 6
+
+# Views html_list wrapper_class values — see templates/views-html-list-css.md
+css:
+  views_list_wrappers:
+    # - my-block__items
+  views_list_grid_layout:
+    # - my-block__items   # wrappers that use CSS grid/flex (not JS carousel)
+  pager_selectors:
+    # - my-block__pager .pager__items
+  section_max_width_selectors:
+    # - .explore-block
+    # - .featured-recipes--figma
+  # QR-CSS-005: newsletter + footer layout (seeded by setup-feature-artifacts for Figma features)
+  component_padding_rules:
+    # - selector: .newsletter-section
+    #   property: min-height
+    #   pattern: '486px'
+    # - selector: .site-footer__bar
+    #   property: justify-content
+    #   value: space-between
+  # QR-CSS-012: section container border per Figma node (37:3593 recipe grid = none; 37:3561 featured = 1px)
+  component_layout_rules:
+    # - _prefix: QR-CSS-012
+    #   selector: .recipe-grid
+    #   property: border
+    #   value: none
+    # - _prefix: QR-CSS-012
+    #   selector: .featured-recipes
+    #   property: border
+    #   pattern: '1px\s+solid'
+    # - _prefix: QR-CSS-013
+    #   selector: .tag
+    #   property: width
+    #   value: fit-content
+    # - _prefix: QR-CSS-013
+    #   selector: .tag
+    #   property: padding
+    #   pattern: '4px\s+8px'
+    # - _prefix: QR-CSS-013
+    #   selector: .tag
+    #   property: border-radius
+    #   value: 12px
+
+# QR-ASSET-001/002/004/005: img/src and static assets reachable per page/component scope
+# Default: enabled. When use_figma_scopes: true, scopes inherit from figma-design-checks.yml
+# screenshot.sections and screenshot.components.items selectors.
+# Pair with figma-asset-manifest.yml (QR-ASSET-005) and figma-design-checks.yml.
+assets:
+  enabled: true
+  check_full_page: true
+  use_figma_scopes: true
+  validate_formats: true
+  pages:
+    - path: /
+      # scopes:
+      #   - name: hero
+      #     selector: ".region--hero"
+      #     required:
+      #       - /themes/custom/my_theme/images/hero.png
+
+# QR-THEME-001: node templates must not use Figma baseline crops for content cards
+theme:
+  enabled: true
+  # theme_name: my_theme   # optional — scan one theme; default scans all under css.theme_dir
+  # forbidden_patterns:
+  #   - figma-baselines
+  #   - images/figma/grid
+  # require_field_render:
+  #   - template_glob: node--*-teaser.html.twig
+  #     field: content.field_image

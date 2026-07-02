@@ -1,0 +1,53 @@
+# Figma PNG exports → theme asset paths
+# Populated during /speckit-plan for EVERY icon/image in Twig or CSS url().
+# See templates/figma-asset-export.md — use Figma MCP download_assets, NOT get_design_context URLs.
+#
+# Export: .specify/extensions/drupal/scripts/bash/export-figma-theme-assets.sh specs/<feature>
+# Verified: verify-foundational.sh + verify-quality.sh (QR-ASSET-005, QR-ASSET-006)
+
+theme: ""  # e.g. cooks_delight — web/themes/custom/<theme>/
+
+# Atomic interactive controls — child nodes under section frames (QR-ASSET-006).
+# Dev-mode checklist: open parent_frame_id → drill children → record figma_node_id + dimensions.
+# Never reuse section screenshot node IDs for child icons (e.g. 144:26 search ≠ 37:3601 newsletter).
+atomic_components:
+  # - id: header-search-icon
+  #   parent_frame_id: "144:8"
+  #   parent_frame_name: Navigation
+  #   figma_node_id: "144:26"
+  #   theme_path: images/figma/icon-search.png
+  #   display: { width: 21, height: 21 }
+  #   css_selector: .site-header__search img
+  #   kind: icon
+  # - id: newsletter-input-pill
+  #   parent_frame_id: "37:3601"
+  #   parent_frame_name: CTA Section
+  #   css_selector: .newsletter-section form
+  #   kind: composite_form
+  #   dimensions: { width: 426, height: 50 }
+  #   children:
+  #     - id: newsletter-mail-icon
+  #       node_pending: true
+  #       theme_path: images/icons/icon-mail.svg
+  #       display: { width: 21, height: 21 }
+  #       css_hook: .newsletter-section form::before
+  #       kind: icon
+
+assets:
+  # --- UI icons (download_assets → export_url) ---
+  # - figma_node_id: "7:477"
+  #   figma_name: explore-icon-breakfast
+  #   theme_path: images/icons/category-breakfast.png
+  #   display: { width: 40, height: 40 }
+  #   export_url: https://www.figma.com/api/mcp/asset/…
+  # - figma_node_id: "144:26"
+  #   figma_name: header-search-icon
+  #   theme_path: images/figma/icon-search.png
+  #   display: { width: 21, height: 21 }
+  #   atomic_component_id: header-search-icon
+  # --- Decorative / footer ---
+  # - figma_node_id: "32:3497"
+  #   figma_name: newsletter-bg
+  #   theme_path: images/figma/newsletter-bg.png
+  #   asset_role: reference_only
+  #   export_url: https://www.figma.com/api/mcp/asset/…

@@ -1,0 +1,16 @@
+name: {{PROJECT_NAME}}
+type: drupal11
+docroot: web
+php_version: "{{PHP_VERSION}}"
+webserver_type: nginx-fpm
+database:
+  type: mariadb
+  version: "10.11"
+composer_version: "2"
+hooks:
+  post-start:
+    - composer: install
+  post-import-db:
+    - exec: drush updatedb -y
+    - exec: drush config:import -y
+    - exec: drush cr

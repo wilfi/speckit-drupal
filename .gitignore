@@ -1,0 +1,5 @@
+# Consumer-specific config (copy from config-template.yml on install)
+drupal-config.yml
+
+# Figma screenshot tooling (installed by ensure-figma-node-deps.sh)
+node_modules/

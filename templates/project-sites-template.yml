@@ -1,0 +1,36 @@
+# Drupal sites manifest — project-level (Spec Kit)
+# Keys are logical site IDs referenced in feature specs.
+
+default_site: default
+
+multisite_enabled: false
+
+sites:
+  default:
+    label: "[Human-readable site name]"
+    description: Primary site
+    drupal_site_dir: default
+    docroot: web
+    config_sync: config/sync
+    ddev_project: "[ddev-project-name]"
+    base_url: https://[project].ddev.site
+    theme: "[theme_machine_name]"
+    front_page: /
+    primary_urls:
+      - /
+    roles:
+      - anonymous
+      - authenticated
+      - administrator
+    features: []
+
+# Additional sites (when multisite_enabled: true):
+#
+#  brand_b:
+#    label: "Brand B"
+#    drupal_site_dir: brandb.example.com
+#    base_url: https://brandb.example.com
+#    theme: brand_b_theme
+#    config_sync: config/sync-brandb
+#    features:
+#      - specs/004-brand-b-landing

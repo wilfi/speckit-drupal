@@ -1,0 +1,45 @@
+# Default atomic Figma components keyed by figma-regions region slug.
+# Merged into figma-asset-manifest.yml by sync-figma-atomic-manifest.php when a feature
+# region matches. Feature figma-regions.yml atomic_components[] override these by id.
+#
+# Optional: set file_key to limit this catalog to one Figma file.
+# file_key: YOUR_FIGMA_FILE_KEY
+
+defaults_by_region_slug: {}
+
+# --- Examples (move into defaults_by_region_slug when customizing) ---
+#
+# header:
+#   - id: header-search-button
+#     region_slug: header
+#     figma_node_id: '144:25'
+#     css_selector: .site-header__search
+#     kind: composite_form
+#     dimensions: { width: 40, height: 40 }
+#     children:
+#       - id: header-search-icon
+#         figma_node_id: '144:26'
+#         theme_path: images/icons/icon-search.svg
+#         display: { width: 21, height: 21 }
+#         css_selector: .site-header__search img
+#         kind: icon
+#
+# content-below:
+#   - id: newsletter-input-pill
+#     region_slug: content-below
+#     css_selector: .newsletter-section form
+#     kind: composite_form
+#     dimensions: { width: 426, height: 50 }
+#     screenshot:
+#       name: newsletter-form
+#       selector: .newsletter-section__form
+#       baseline: newsletter-form-1440.png
+#       max_diff_percent: 1
+#       optional_baseline: true
+#     children:
+#       - id: newsletter-mail-icon
+#         node_pending: true
+#         theme_path: images/icons/icon-mail.svg
+#         display: { width: 21, height: 21 }
+#         css_hook: .newsletter-section__field-icon img
+#         kind: icon

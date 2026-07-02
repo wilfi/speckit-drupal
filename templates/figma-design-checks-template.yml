@@ -1,0 +1,82 @@
+# Figma design parity + screenshot checks
+# Copy to specs/<feature>/figma-design-checks.yml during /speckit-plan
+# Verified by check-figma-design.php (QR-FIGMA-001) and check-figma-screenshot.sh (QR-FIGMA-002)
+
+figma:
+  enabled: true
+  file_key: ""
+  node_id: ""
+  theme_dir: web/themes/custom
+  pages:
+    - path: /
+      must_contain: []
+      must_have_classes: []
+      css_selectors: []
+  screenshot:
+    enabled: true
+    viewport:
+      width: 1440
+      height: 900
+    full_page: true
+    max_diff_percent: 2
+    pixel_threshold: 0.1
+    baselines_dir: figma-baselines
+    # QR-FIGMA-002 reference: figma | live | both (figma = compare live site vs Figma API PNGs)
+    baseline_source: figma
+    figma_source_subdir: figma-source
+    live_subdir: live
+    figma_export_scale: 1
+    pages:
+      - path: /
+        baseline: front-full-1440.png
+        # figma_node_id: "7:360"  # synced from figma.node_id / figma-regions.yml
+    sections:
+      - name: hero
+        selector: ".region--hero"
+        baseline: hero-1440.png
+        # figma_node_id: "37:3539"
+        max_diff_percent: 1
+      - name: explore
+        selector: ".region--explore"
+        baseline: explore-1440.png
+        max_diff_percent: 1
+      - name: featured
+        selector: ".region--featured"
+        baseline: featured-1440.png
+        max_diff_percent: 1
+      - name: grid
+        selector: ".region--grid"
+        baseline: grid-1440.png
+        max_diff_percent: 2
+      - name: about
+        selector: ".region--about"
+        baseline: about-1440.png
+        max_diff_percent: 1
+      - name: newsletter
+        selector: ".region--newsletter"
+        baseline: newsletter-1440.png
+        max_diff_percent: 1
+      - name: newsletter-form
+        selector: ".newsletter-section__form"
+        baseline: newsletter-form-1440.png
+        figma_node_id: "37:3601"
+        parent_frame_id: "37:3601"
+        max_diff_percent: 1
+        optional_baseline: true
+      - name: footer
+        selector: ".region--footer"
+        baseline: footer-1440.png
+        max_diff_percent: 1
+    components:
+      enabled: false
+      pixel_threshold: 0.1
+      max_diff_percent: 1
+      baselines_subdir: figma-baselines/components
+      stabilize:
+        menu_active_path: /
+      items: []
+        # - name: navigation
+        #   figma_node_id: "144:8"
+        #   selector: ".site-header"
+        #   baseline: nav-144-8.png
+        #   max_diff_percent: 5

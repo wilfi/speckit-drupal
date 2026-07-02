@@ -1,0 +1,147 @@
+# Drupal extension configuration
+
+# --- Installation (speckit.drupal.install) ---
+project_template: drupal/recommended-project
+php_min_version: "8.3"
+preserve_dirs:
+  - .specify
+  - .cursor
+  - .git
+  - specs
+minimum_stability: stable
+prefer_stable: true
+
+# --- Workflow setup (speckit.drupal.setup) ---
+workflow:
+  # Copy Drupal templates into .specify/templates/ (backs up originals)
+  install_templates: true
+  # composer require drush/drush
+  install_drush: true
+  # Create config/sync and custom code directories
+  config_sync_dir: config/sync
+  custom_modules_dir: web/modules/custom
+  custom_themes_dir: web/themes/custom
+  # Scaffold .ddev/config.yaml when `ddev` is on PATH
+  scaffold_ddev: true
+  ddev_php_version: "8.3"
+  # Append config sync path to settings.php when missing
+  configure_settings_sync: true
+  scaffold_project_context: true
+  sync_cursor_skills: true
+  auto_setup_feature_artifacts: true
+
+# --- Project Drupal context (shared across all features) ---
+project_context:
+  dir: .specify/drupal
+  data_model: data-model.md
+  site_structure: site-structure.md
+  sites: sites.yml
+
+# --- MCP Tools (speckit.drupal.setup-mcp-tools) ---
+# Local dev only — AI site building via Cursor MCP. See templates/mcp-tools-workflow.md
+mcp_tools:
+  enabled: true
+  composer_constraint: "^1.0@beta"
+  # mcp_tools requires drupal/tool ^1.0@alpha — setup script installs both
+  scope: read,write
+  uid: 1
+  gateway: false
+  cursor_server_name: drupal
+  cursor_config: .cursor/mcp.json
+  # Submodules to enable (site-building bundle; trim per project)
+  submodules:
+    - mcp_tools
+    - mcp_tools_stdio
+    - mcp_tools_structure
+    - mcp_tools_views
+    - mcp_tools_blocks
+    - mcp_tools_menus
+    - mcp_tools_users
+    - mcp_tools_content
+    - mcp_tools_media
+    - mcp_tools_config
+    - mcp_tools_theme
+    - mcp_tools_webform   # skipped automatically if webform not installed
+
+# --- Post-implement (speckit.drupal.finalize hook) ---
+post_implement:
+  cache_rebuild: true
+  config_export: false
+  provision_admin: true
+  drush_root: web
+
+# --- Quality rules (mandatory for user-facing features) ---
+# See templates/drupal-quality-rules.md
+quality_rules:
+  enabled: true
+  use_ddev: true
+  performance:
+    max_load_seconds: 2
+    check_urls:
+      - /
+  accessibility:
+    standard: WCAG2AA
+    max_errors: 0
+    # QR-FIGMA-000: Figma design wins over pa11y when they conflict
+    defer_to_figma: true
+  figma:
+    source_of_truth: true
+  post_implement:
+    run_verify: true
+    write_quality_report: true
+  quality_report:
+    enabled: true
+    filename: quality-results.md
+  smoke:
+    enabled: true
+    forbidden_strings:
+      - "Hello World"
+    libraries: []
+    js_behaviors: []
+    icon_markers: []
+    pages:
+      - path: /
+        must_contain: []
+        must_not_contain:
+          - "Hello World"
+        min_occurrences: {}
+  css:
+    enabled: true
+    theme_dir: web/themes/custom
+    views_list_wrappers: []
+    views_list_grid_layout: []
+    pager_selectors: []
+    component_padding_rules: []
+  assets:
+    enabled: true
+    check_full_page: true
+    use_figma_scopes: true
+    validate_formats: true
+    pages: []
+    scopes: []
+
+# --- Figma design → spec (speckit.drupal.figma-design) ---
+# Requires Figma MCP in Cursor. See templates/figma-design-rules.md
+figma:
+  enabled: true
+  theme_strategy: brownfield   # brownfield | greenfield | hybrid
+  base_theme: olivero         # active theme to extend (brownfield)
+  subtheme_dir: web/themes/custom
+  design_context_file: design-context.md
+  regions_file: figma-regions.yml
+  region_selector_pattern: ".region--{slug}"
+  section_baseline_suffix: "-1440.png"
+  baseline_source: figma
+  figma_source_subdir: figma-source
+  live_subdir: live
+  figma_export_scale: 1
+  auto_export_baselines: true
+  auto_export_figma_source: true
+  export_when: after_theme_story
+  require_baselines_at_foundational: false
+  require_baselines_at_polish: true
+  require_asset_manifest_at_polish: true
+  try_export_on_before_implement: true
+  # Optional: default file key if team uses one design system file
+  # default_file_url: https://www.figma.com/design/...
+

@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Idempotent site setup template for Spec Kit Drupal features.
+ *
+ * Copy to scripts/setup-<feature>-site.php and customize.
+ *
+ * RULES (see templates/mcp-tooling-guide.md):
+ * - MUST be idempotent: check-before-create for all entities.
+ * - MUST NOT duplicate core menu links (e.g. standard.front_page for Home).
+ * - Prefer drush php:eval entity API over raw SQL for inventory.
+ * - Run verify-quality.sh after seed/setup scripts.
+ */
+
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+
+/**
+ * Return TRUE when a menu link with the same title and URI exists.
+ */
+function spec_kit_menu_link_exists($storage, string $menu_name, string $title, string $uri): bool {
+  foreach ($storage->loadByProperties(['menu_name' => $menu_name, 'title' => $title]) as $link) {
+    if (($link->get('link')->uri ?? '') === $uri) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Create a menu link only when title+URI is not already present.
+ */
+function spec_kit_ensure_menu_link($storage, string $menu_name, string $title, string $uri, int $weight = 0): void {
+  if (spec_kit_menu_link_exists($storage, $menu_name, $title, $uri)) {
+    return;
+  }
+  MenuLinkContent::create([
+    'title' => $title,
+    'link' => ['uri' => $uri],
+    'menu_name' => $menu_name,
+    'weight' => $weight,
+  ])->save();
+}
+
+// Example — do NOT add custom Home; Drupal provides standard.front_page.
+// $storage = \Drupal::entityTypeManager()->getStorage('menu_link_content');
+// spec_kit_ensure_menu_link($storage, 'main', 'Recipes', 'internal:/#grid', 0);
+
+echo "Setup complete.\n";

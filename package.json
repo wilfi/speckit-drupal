@@ -1,0 +1,10 @@
+{
+  "name": "drupal-spec-kit-scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pixelmatch": "^6.0.0",
+    "playwright": "^1.49.0",
+    "pngjs": "^7.0.0"
+  }
+}

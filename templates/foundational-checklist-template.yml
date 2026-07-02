@@ -1,0 +1,56 @@
+# Foundational gate checklist for verify-foundational.sh
+# Copy to specs/<feature>/foundational-checklist.yml during /speckit-plan
+# Fill from data-model.md (entities) and plan.md (contrib modules, theme)
+
+# Contrib modules that MUST be installed (composer) and enabled (drush en)
+contrib_modules:
+  # - webform
+  # - slick
+  # - blazy
+  # - better_exposed_filters
+
+# JS/CSS library files that MUST exist (filesystem) when listed modules are enabled
+required_libraries:
+  # - path: libraries/slick/slick/slick.min.js
+  #   when_modules: [slick]
+  #   note: Install via composer npm-asset/slick-carousel — see contrib-libraries.md
+
+# Config entity machine names — verifies config/sync/<name>.yml exists
+config_entities:
+  # - node.type.recipe
+  # - taxonomy.vocabulary.recipe_category
+  # - core.entity_form_display.node.recipe.default
+
+# QR-CONFIG-001: all field.field.node.{bundle}.* must be on form display content (not hidden)
+# Verified by check-entity-form-displays.php in verify-foundational.sh
+
+# Optional explicit config/sync paths (when entity name ≠ filename pattern)
+config_files:
+  # - field.storage.node.field_image.yml
+
+# Active Drupal checks after config:import (drush php:eval)
+content_entities:
+  node_types:
+    # - recipe
+  vocabularies:
+    # - recipe_category
+
+# Greenfield / brownfield theme
+theme:
+  name: ""              # e.g. cooks_delight
+  must_be_default: true
+
+# When true, fail if drush config:status shows "Only in sync dir" for config_entities
+require_config_import: true
+
+# Figma parity (set enabled: true when Figma URL or design-context.md present)
+# verify-foundational.sh checks baselines_dir/figma-source + required_baselines + asset_manifest
+figma:
+  enabled: false
+  baselines_dir: figma-baselines
+  reference_baselines_subdir: figma-source
+  required_baselines:
+    # - front-full-1440.png
+    # - hero-1440.png
+  asset_manifest: figma-asset-manifest.yml
+  # Populated during /speckit-plan (download_assets). Verified at polish via QR-ASSET-005.

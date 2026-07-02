@@ -1,0 +1,160 @@
+schema_version: "1.0"
+
+extension:
+  id: drupal
+  name: "Drupal Spec Kit"
+  version: "1.18.0"
+  description: "Drupal CMS integration for Spec Kit — Figma assets manifest, smoke icon gates, QR-ASSET-005, hard QR-FIGMA-002 gates"
+  author: spec-project
+  license: MIT
+  category: integration
+  effect: read-write
+
+requires:
+  speckit_version: ">=0.2.0"
+  tools:
+    - name: composer
+      required: true
+    - name: php
+      required: true
+
+provides:
+  commands:
+    - name: speckit.drupal.install
+      file: commands/speckit.drupal.install.md
+      description: "Install the latest Drupal recommended project in the current directory"
+    - name: speckit.drupal.setup
+      file: commands/speckit.drupal.setup.md
+      description: "Set up Drupal Spec Kit workflow — templates, Drush, config sync, DDEV"
+    - name: speckit.drupal.setup-mcp-tools
+      file: commands/speckit.drupal.setup-mcp-tools.md
+      description: "Install mcp_tools and wire Cursor MCP for AI site building (local dev)"
+    - name: speckit.drupal.verify-plan
+      file: commands/speckit.drupal.verify-plan.md
+      description: "Verify Drupal plan includes architecture and config strategy sections"
+    - name: speckit.drupal.verify-foundational
+      file: commands/speckit.drupal.verify-foundational.md
+      description: "Verify Phase 2 foundational gate — contrib, config export, active entities"
+    - name: speckit.drupal.verify-quality
+      file: commands/speckit.drupal.verify-quality.md
+      description: "Verify load time, smoke/content markers, libraries, JS behaviors, and WCAG 2.1 AA scan"
+    - name: speckit.drupal.quality-report
+      file: commands/speckit.drupal.quality-report.md
+      description: "Generate stakeholder quality-results.md for the active feature"
+    - name: speckit.drupal.generate-site-context
+      file: commands/speckit.drupal.generate-site-context.md
+      description: "Scaffold .specify/drupal/ from live site via Drupal MCP"
+    - name: speckit.drupal.finalize
+      file: commands/speckit.drupal.finalize.md
+      description: "Finalize Drupal implementation — cache rebuild and optional config export"
+    - name: speckit.drupal.provision-site
+      file: commands/speckit.drupal.provision-site.md
+      description: "Post-implement admin provisioning from drupal-admin-checklist.yml"
+    - name: speckit.drupal.figma-design
+      file: commands/speckit.drupal.figma-design.md
+      description: "Extract Figma design context via MCP and map to Drupal spec (design-context.md)"
+    - name: speckit.drupal.setup-feature-artifacts
+      file: commands/speckit.drupal.setup-feature-artifacts.md
+      description: "Scaffold quality-checks, figma-design-checks, and foundational Figma config after plan"
+    - name: speckit.drupal.try-export-figma-baselines
+      file: commands/speckit.drupal.try-export-figma-baselines.md
+      description: "Export figma-source baselines from Figma API + optional live captures (config-driven)"
+    - name: speckit.drupal.verify-figma-section
+      file: commands/speckit.drupal.verify-figma-section.md
+      description: "QR-FIGMA-002 for one or more sections; writes fix queue for agent loop"
+    - name: speckit.drupal.figma-fix-loop
+      file: commands/speckit.drupal.figma-fix-loop.md
+      description: "Agent loop: fix theme/CSS from section diff report until QR-FIGMA-002 passes"
+
+  config:
+    - name: "drupal-config.yml"
+      template: "config-template.yml"
+      description: "Drupal installation and workflow configuration"
+      required: false
+
+  templates:
+    - name: spec-template
+      file: templates/spec-template.md
+      description: "Drupal spec with QR-PERF-001 and QR-A11Y-001 built in"
+    - name: plan-template
+      file: templates/plan-template.md
+      description: "Drupal plan with quality rules and constitution gates"
+    - name: tasks-template
+      file: templates/tasks-template.md
+      description: "Drupal tasks with verify-foundational + verify-quality gates"
+    - name: foundational-checklist-template
+      file: templates/foundational-checklist-template.yml
+      description: "Checklist for verify-foundational.sh Phase 2 gate"
+    - name: quality-checks-template
+      file: templates/quality-checks-template.yml
+      description: "Per-feature smoke and CSS layout checks for verify-quality.sh"
+    - name: views-html-list-css
+      file: templates/views-html-list-css.md
+      description: "Views html_list wrapper + nested ul CSS conventions (QR-CSS-001–003)"
+    - name: figma-design-checks-template
+      file: templates/figma-design-checks-template.yml
+      description: "Figma copy/class/CSS + screenshot baselines (QR-FIGMA-001/002) — required when Figma URL present"
+    - name: figma-asset-export
+      file: templates/figma-asset-export.md
+      description: "Figma download_assets workflow — manifest, export script, QR-ASSET-005"
+    - name: figma-asset-manifest-template
+      file: templates/figma-asset-manifest-template.yml
+      description: "Figma download_assets exports mapped to theme asset paths"
+    - name: figma-regions-template
+      file: templates/figma-regions-template.yml
+      description: "Machine-readable region selectors and smoke markers for sync-figma-checks"
+    - name: drupal-admin-checklist-template
+      file: templates/drupal-admin-checklist-template.yml
+      description: "Post-implement admin entity checklist for provision-admin-components.php"
+    - name: project-runbook-template
+      file: templates/project-runbook-template.md
+      description: "Project root runbook (README-SPECKIT-DRUPAL.md) generated by setup"
+    - name: greenfield-runbook
+      file: GREENFIELD-RUNBOOK.md
+      description: "Greenfield bootstrap + pixel-perfect homepage workflow (copied to project root on setup)"
+    - name: mcp-tools-workflow
+      file: templates/mcp-tools-workflow.md
+      description: "MCP Tools vs config-first workflow for [SB] site building"
+
+hooks:
+  before_specify:
+    command: speckit.drupal.figma-design
+    optional: true
+    priority: 15
+    prompt: "Extract Figma design context for this feature?"
+    description: "When input includes a Figma URL, fetch design context and write design-context.md"
+    condition: "input.contains('figma.com')"
+  after_plan:
+    - command: speckit.drupal.setup-feature-artifacts
+      optional: false
+      priority: 10
+      description: "Scaffold quality-checks, figma-design-checks, and foundational Figma config"
+    - command: speckit.drupal.verify-plan
+      optional: true
+      priority: 20
+      prompt: "Verify Drupal plan sections?"
+      description: "Check plan.md for Drupal architecture and config strategy"
+  before_implement:
+    - command: speckit.drupal.try-export-figma-baselines
+      optional: true
+      priority: 10
+      prompt: "Try exporting Figma baselines if site is ready?"
+      description: "Conditional baseline export when DDEV renders primary URL (export_when config)"
+  after_implement:
+    - command: speckit.drupal.provision-site
+      priority: 10
+      optional: false
+      description: "Provision menu links, pages, and recipe images from drupal-admin-checklist.yml"
+    - command: speckit.drupal.finalize
+      priority: 20
+      optional: true
+      prompt: "Run Drupal finalize (cache rebuild / config export / quality verify)?"
+      description: "Drush cache rebuild, optional config export, and quality rules verification"
+
+tags:
+  - drupal
+  - cms
+  - php
+  - composer
+  - ddev
+  - drush

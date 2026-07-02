@@ -1,0 +1,18 @@
+# Post-implement admin provisioning checklist
+# Copy to specs/<feature>/drupal-admin-checklist.yml
+# Executed by provision-admin-components.php (and MCP skill in Cursor)
+
+admin_provision:
+  enabled: true
+  menu_links:
+    # - { menu: main, title: "Example", uri: "internal:/example", weight: 10 }
+  nodes:
+    # - { type: page, title: "Example", path: example, body: "<p>Placeholder</p>" }
+  block_content: []
+  recipe_images:
+  #   source_dir: images/figma
+  #   theme: cooks_delight
+  webforms:
+    # - { id: newsletter, required: true }
+  verify:
+    # - { tool: mcp_tools_get_menu_tree, menu: main, expect_titles: ["Example"] }
